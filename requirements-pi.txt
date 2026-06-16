@@ -1,0 +1,13 @@
+# argus-pi dependencies (Raspberry Pi). No torch / ultralytics — inference runs
+# on ONNX Runtime against an exported .onnx model.
+#
+# OpenCV and NumPy come from the system (apt: python3-opencv, python3-numpy) and
+# are picked up via a --system-site-packages venv — building them from pip on a
+# Pi 3B+ is slow/fragile. scripts/setup-pi.sh handles this. They are listed here
+# (commented) only for documentation.
+#
+# opencv-python  # provided by apt python3-opencv
+# numpy          # provided by apt python3-numpy
+onnxruntime>=1.20
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0

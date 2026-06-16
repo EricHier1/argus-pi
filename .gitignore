@@ -1,0 +1,28 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Argus runtime data — database, snapshots, and TLS certs/keys (may show people)
+data/
+
+# Model weights (large, auto-downloaded)
+*.pt
+
+# Secrets / certs / databases — belt-and-suspenders if they ever land outside data/
+*.pem
+*.key
+*.crt
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
+!.env.example
+
+# OS / editor noise
+.DS_Store
+*.log
+.idea/
+.vscode/

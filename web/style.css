@@ -1,0 +1,413 @@
+/* ==========================================================================
+   Argus — stylesheet
+   Dark-black theme adapted from the Dispatcher brand palette.
+   Sections: 1 Tokens · 2 Base · 3 Header/Nav · 4 Menu · 5 Layout/Panels
+             6 Feed · 7 Lists · 8 Forms · 9 Gallery · 10 Lightbox · 11 Responsive
+   ========================================================================== */
+
+/* --- 1. Design tokens ----------------------------------------------------- */
+:root {
+  /* surfaces — pure black, no greys */
+  --bg:        #000000;   /* app background */
+  --panel:     #0B0D0B;   /* cards / panels */
+  --surface:   #121512;   /* raised: inputs, chips, hover */
+  --line:      #1E261F;   /* borders (near-black, faint green tint) */
+  --line-2:    #2C382E;   /* hover border */
+  /* text */
+  --text:      #FFFFFF;
+  --text-2:    #CFE0D4;   /* soft green-white */
+  --muted:     #6F8175;   /* dim green-grey, used sparingly */
+  /* one accent: green */
+  --green:     #01BB4E;
+  --green-2:   #03E561;   /* bright hover */
+  --green-ink: #04200F;   /* text on green buttons */
+  --accent:    var(--green);
+  --ok:        var(--green);
+  --alert:     #F86660;   /* danger only (delete / shutdown) */
+  /* shape & type */
+  --radius:    10px;
+  --radius-sm: 7px;
+  --font:      'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono:      'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --shadow:    0 16px 40px rgba(0, 0, 0, .8);
+}
+
+/* --- 2. Base -------------------------------------------------------------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font: 14px/1.5 var(--font);
+  background: var(--bg);
+  color: var(--text);
+}
+h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: .5px; }
+h2 {
+  margin: 0 0 12px; font-size: 13px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .8px; color: var(--muted);
+}
+h3 {
+  margin: 16px 0 10px; font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .8px; color: var(--muted);
+}
+h3:first-child { margin-top: 0; }
+.muted { color: var(--muted); font-size: 12px; }
+.hint  { color: var(--muted); font-size: 12px; margin: 8px 0; }
+
+/* --- 3. Header / tabs ----------------------------------------------------- */
+header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 20px; background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 10;
+}
+nav.tabs { display: flex; gap: 4px; }
+.tab-btn {
+  background: transparent; color: var(--muted); border: 1px solid transparent;
+  border-radius: var(--radius-sm); padding: 6px 14px; font-weight: 600; font-size: 13px;
+  cursor: pointer;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { background: var(--surface); color: var(--green); border-color: var(--green); }
+.tab-btn kbd {
+  font: 11px var(--mono); background: var(--surface); color: var(--muted);
+  border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; margin-left: 2px;
+}
+.tab-view { display: none; }
+.tab-view.active { display: grid; }
+
+.status { font-size: 12px; color: var(--muted); margin-left: auto; }
+.status .dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--muted); margin-right: 6px; vertical-align: middle;
+}
+.status.live  { color: var(--text-2); }
+.status.live  .dot { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+.status.error { color: var(--alert); }
+.status.error .dot { background: var(--alert); }
+
+/* hamburger (CSS-drawn, no glyph) */
+.menu-btn {
+  margin-left: 4px; width: 38px; height: 34px; padding: 0;
+  background: transparent; border: 1px solid var(--line); border-radius: var(--radius-sm);
+  cursor: pointer; position: relative;
+}
+.menu-btn::before, .menu-btn::after, .menu-btn span {
+  content: ""; position: absolute; left: 9px; right: 9px; height: 2px;
+  background: var(--text); border-radius: 2px;
+}
+.menu-btn span { top: 16px; }
+.menu-btn::before { top: 11px; }
+.menu-btn::after  { top: 21px; }
+.menu-btn:hover { border-color: var(--line-2); }
+
+/* --- 4. Settings menu ----------------------------------------------------- */
+.menu-panel {
+  position: fixed; top: 56px; right: 16px; z-index: 50; width: 330px; max-width: 92vw;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 16px; box-shadow: var(--shadow);
+}
+.menu-panel[hidden] { display: none; }
+.menu-panel h4 { margin: 12px 0 8px; font-size: 12px; color: var(--text-2); }
+.src-header { display: flex; align-items: center; justify-content: space-between; }
+.src-header h3, .src-header h4 { margin-bottom: 8px; }
+.device-opt button.ghost { margin-left: auto; }
+
+.device-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.device-opt {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px; flex-wrap: nowrap;
+  border: 1px solid var(--line); border-radius: var(--radius-sm); cursor: pointer; font-size: 13px;
+}
+.device-opt.selected { border-color: var(--green); background: rgba(1, 187, 78, .12); }
+.device-opt input[type=radio] { width: 18px; height: 18px; flex: 0 0 auto; margin: 0; padding: 0; }
+.device-opt > span:first-of-type { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.device-opt .current { font-size: 11px; color: var(--ok); flex: 0 0 auto; }
+
+#custom-source { width: 100%; margin-bottom: 10px; }
+#add-camera { width: 100%; }
+.menu-panel .row { display: flex; gap: 10px; margin-bottom: 10px; }
+.menu-panel .row label { flex: 1; }
+.menu-panel .row select, .menu-panel .row input { width: 100%; }
+
+/* power toggle */
+.power { width: 100%; margin-bottom: 8px; }
+.power.on  { background: var(--ok);    color: #03210f; }
+.power.off { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
+.power.danger-btn { background: transparent; color: var(--alert); border: 1px solid var(--alert); }
+.power.danger-btn:hover { background: rgba(248, 102, 96, .12); }
+.power.arm { background: var(--alert); color: #fff; border: 0; }   /* confirm state */
+
+/* --- 5. Layout / panels --------------------------------------------------- */
+main {
+  display: grid; grid-template-columns: 2fr 1fr; gap: 16px; padding: 16px;
+  max-width: 1400px; margin: 0 auto;
+}
+.panel {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 16px;
+}
+.feed { grid-row: span 2; }
+.search, .activity { grid-column: 1 / -1; }
+
+/* --- 6. Live feed --------------------------------------------------------- */
+.feed-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.feed-grid.multi { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.feed-video {
+  background: #000; border-radius: var(--radius-sm); overflow: hidden;
+  aspect-ratio: 16/9; display: flex;
+}
+.feed-video img { width: 100%; height: 100%; object-fit: contain; }
+.feed-cap { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 12px; }
+.feed-name { font-weight: 600; }
+.feed-stat.err { color: var(--alert); }
+
+/* activity chart */
+.activity canvas { width: 100%; display: block; }
+
+/* quad + single fill the ENTIRE viewport (break out of the 1400px content cap) */
+#tab-quad.tab-view.active, #tab-single.tab-view.active {
+  display: block; max-width: none; margin: 0; padding: 8px;
+}
+#tab-quad > .panel, #tab-single > .panel {
+  display: flex; flex-direction: column; height: calc(100dvh - 68px); padding: 10px;
+}
+.quad-grid {
+  flex: 1; min-width: 0; min-height: 0; display: grid; gap: 8px;
+  grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--rows, 1), minmax(0, 1fr));
+}
+.quad-cell {
+  position: relative; background: #000; border-radius: var(--radius-sm);
+  overflow: hidden; border: 1px solid var(--line); min-width: 0; min-height: 0;
+}
+.quad-cell img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.quad-tag {
+  position: absolute; left: 8px; bottom: 8px; font-size: 12px; font-weight: 600;
+  background: rgba(0, 0, 0, .55); color: #fff; padding: 2px 8px; border-radius: 4px;
+}
+
+/* single full-screen camera view */
+.single-stage {
+  position: relative; background: #000; border-radius: var(--radius-sm);
+  overflow: hidden; display: flex; align-items: center; justify-content: center;
+  flex: 1; min-width: 0; min-height: 0;
+}
+.single-stage img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.single-overlay { position: absolute; top: 10px; right: 10px; z-index: 3; display: flex; gap: 8px; }
+/* CSS-based fullscreen (works on iOS Safari, unlike native on <img>) */
+.single-stage.fs {
+  position: fixed; inset: 0; z-index: 200; border-radius: 0; background: #000;
+}
+.single-stage.fs img { max-height: 100dvh; }
+
+/* View layout: full-screen camera stage */
+.single-layout { flex: 1; min-height: 0; display: flex; gap: 10px; }
+.single-layout .single-stage { flex: 1; min-width: 0; }
+
+/* No text selection on touch controls */
+.single-overlay, .single-overlay button, .single-overlay select {
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+
+.chips { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 20px; padding: 3px 10px; font-size: 12px; color: var(--text-2);
+}
+
+/* --- 7. Lists (alerts / rules) ------------------------------------------- */
+.list { display: flex; flex-direction: column; gap: 8px; max-height: 360px; overflow-y: auto; }
+.alert-item, .rule-item {
+  display: flex; gap: 10px; align-items: center;
+  padding: 8px; border: 1px solid var(--line); border-radius: var(--radius-sm);
+}
+.alert-item { border-left: 3px solid var(--alert); }
+.alert-item.clickable { cursor: pointer; }
+.alert-item.clickable:hover { border-color: var(--green); }
+.alert-item img { width: 64px; height: 40px; object-fit: cover; border-radius: 4px; background: #000; }
+.alert-item .meta, .rule-item .meta { flex: 1; min-width: 0; }
+.alert-item .label, .rule-item .label { font-weight: 600; }
+.rule-item.inactive { opacity: .5; }
+.badge { font-size: 11px; padding: 1px 7px; border-radius: 10px; background: var(--surface); color: var(--text-2); }
+
+/* --- 8. Forms ------------------------------------------------------------- */
+form { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+input, select {
+  background: var(--surface); border: 1px solid var(--line); color: var(--text);
+  border-radius: var(--radius-sm); padding: 7px 9px; font-size: 13px;
+}
+input:focus, select:focus { outline: none; border-color: var(--accent); }
+input[type=number] { width: 90px; }
+button {
+  background: var(--green); color: var(--green-ink); border: 0; border-radius: var(--radius-sm);
+  padding: 8px 16px; font-size: 13px; cursor: pointer; font-weight: 700; letter-spacing: .2px;
+}
+button:hover { background: var(--green-2); }
+button.ghost { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 5px 12px; font-weight: 600; }
+button.ghost:hover { background: rgba(1, 187, 78, .12); }
+button.arm { background: var(--alert); color: #fff; }   /* double-click confirm state */
+button.danger-ghost { border-color: var(--alert); color: var(--alert); }
+button.danger-ghost:hover { background: rgba(248, 102, 96, .12); }
+button.danger-ghost.arm { background: var(--alert); color: #fff; border-color: var(--alert); }
+
+/* editable camera name in the menu */
+.active-cam .cam-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.cam-rename { background: var(--surface); border: 1px solid var(--line); color: var(--text); border-radius: var(--radius-sm); padding: 5px 8px; font-size: 13px; width: 100%; }
+.cam-rename:focus { outline: none; border-color: var(--green); }
+.active-cam .cam-sub { font-size: 11px; }
+
+/* --- 9. Gallery ----------------------------------------------------------- */
+.gallery-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+.gtab {
+  background: transparent; color: var(--muted); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); padding: 5px 14px; font-weight: 600; font-size: 13px;
+}
+.gtab.active { background: var(--bg); color: var(--text); border-color: var(--accent); }
+
+.results { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-top: 12px; }
+.sentinel { height: 1px; }   /* infinite-scroll trigger */
+.result {
+  position: relative; border: 1px solid var(--line); border-radius: var(--radius-sm);
+  padding: 8px; cursor: pointer; transition: border-color .1s;
+}
+.result:hover { border-color: var(--green); }
+.result.kept { border: 2px solid var(--green); }
+.result img { width: 100%; height: 100px; object-fit: cover; border-radius: 4px; background: #000; position: relative; z-index: 1; }
+.result .label { font-weight: 600; margin-top: 4px; }
+
+/* stacked-tile look for objects with multiple pictures */
+.result.stack { box-shadow: 4px 4px 0 -1px var(--panel), 4px 4px 0 0 var(--line), 8px 8px 0 -1px var(--panel), 8px 8px 0 0 var(--line); margin-right: 8px; margin-bottom: 8px; }
+.result.stack:hover { box-shadow: 4px 4px 0 -1px var(--panel), 4px 4px 0 0 var(--green), 8px 8px 0 -1px var(--panel), 8px 8px 0 0 var(--green); }
+.count-badge {
+  position: absolute; top: 10px; right: 42px; z-index: 3;
+  background: var(--green); color: var(--green-ink); font-size: 11px; font-weight: 700;
+  min-width: 20px; text-align: center; padding: 2px 6px; border-radius: 10px;
+}
+
+/* pinned text badge (no emoji) */
+.pin-badge {
+  position: absolute; top: 12px; left: 12px; z-index: 3;
+  background: var(--green); color: var(--green-ink); font-size: 10px; font-weight: 700;
+  letter-spacing: .5px; padding: 2px 6px; border-radius: 4px;
+}
+/* delete control (x) */
+.del-badge {
+  position: absolute; top: 10px; right: 10px; z-index: 2;
+  width: 24px; height: 24px; border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, .65); color: #fff; border: 1px solid var(--line);
+  cursor: pointer; font-size: 15px; line-height: 1; padding: 0;
+  opacity: 0; transition: opacity .1s;
+}
+.result:hover .del-badge { opacity: 1; }
+.del-badge:hover { background: var(--alert); border-color: var(--alert); color: #fff; }
+
+/* --- 10. Lightbox --------------------------------------------------------- */
+.lightbox {
+  position: fixed; inset: 0; z-index: 100; background: rgba(0, 0, 0, .92);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+}
+.lightbox[hidden] { display: none; }
+.lightbox-stage { position: relative; display: inline-block; line-height: 0; }
+.lightbox-stage img { max-width: 92vw; max-height: 76vh; border-radius: var(--radius-sm); }
+.lightbox-stage img.kept-img { border: 3px solid var(--green); }
+.lightbox-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.lightbox-caption { color: var(--text); font-size: 14px; text-align: center; padding: 0 12px; }
+.lightbox-close {
+  position: absolute; top: 14px; right: 18px; font-size: 34px; line-height: 1;
+  color: #fff; cursor: pointer; z-index: 3;
+}
+/* prev/next — big touch targets on the left/right edges */
+.lb-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+  width: 48px; height: 72px; font-size: 30px; line-height: 1;
+  background: rgba(0, 0, 0, .45); color: #fff; border: 1px solid var(--line);
+  border-radius: var(--radius-sm); cursor: pointer;
+}
+.lb-nav:hover { background: rgba(0, 0, 0, .7); border-color: var(--green); color: var(--green); }
+.lb-nav.prev { left: 10px; }
+.lb-nav.next { right: 10px; }
+.lb-nav[hidden] { display: none; }
+.lightbox-controls { display: flex; align-items: center; gap: 12px; }
+.lb-btn {
+  background: var(--surface); color: var(--text); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); padding: 8px 14px; font-size: 13px; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+}
+.lb-btn:hover { border-color: var(--green); color: var(--green); }
+.lb-btn.pinned { background: var(--green); color: var(--green-ink); border-color: var(--green); }
+.lb-btn.danger { border-color: var(--alert); color: var(--alert); }
+.lb-btn.danger:hover { background: var(--alert); border-color: var(--alert); color: #fff; }
+
+/* panel header (title + inline control, e.g. boxes toggle) */
+.panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.panel-head h2 { margin: 0; }
+.count-pill { background: var(--green); color: var(--green-ink); font-size: 12px; font-weight: 700; padding: 1px 9px; border-radius: 10px; }
+
+/* analytics tab */
+.stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin: 4px 0 16px; }
+.stat-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+.stat-n { font-size: 26px; font-weight: 700; color: var(--green); }
+.stat-l { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.analytics-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 12px; }
+.barlist { display: flex; flex-direction: column; gap: 6px; }
+.bar-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.bar-label { flex: 0 0 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { flex: 1; height: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; background: var(--green); }
+.bar-n { flex: 0 0 auto; color: var(--text-2); font-variant-numeric: tabular-nums; min-width: 34px; text-align: right; }
+#hour-chart { width: 100%; display: block; margin-top: 8px; }
+
+/* --- 11. Accessibility ---------------------------------------------------- */
+:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+button:focus-visible, .result:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+/* --- 12. Responsive / mobile --------------------------------------------- */
+@media (max-width: 900px) {
+  main { grid-template-columns: 1fr; gap: 12px; padding: 12px; }
+  .feed { grid-row: auto; }
+}
+@media (max-width: 640px) {
+  header { gap: 8px; padding: 10px 12px; flex-wrap: wrap; }
+  h1 { font-size: 16px; }
+  /* tabs become a horizontal swipe strip so all fit without rotating */
+  nav.tabs {
+    order: 3; width: 100%; flex-wrap: nowrap; overflow-x: auto;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px;
+  }
+  nav.tabs::-webkit-scrollbar { display: none; }
+  .tab-btn { flex: 0 0 auto; white-space: nowrap; }
+  .tab-btn kbd { display: none; }              /* shortcuts are desktop-only */
+  .status { order: 2; font-size: 11px; }
+  .menu-btn { order: 1; }
+
+  /* full-screen slide-in menu on phones */
+  .menu-panel {
+    top: 0; right: 0; bottom: 0; width: 86vw; max-width: 360px;
+    border-radius: 0; border-width: 0 0 0 1px; overflow-y: auto;
+    padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+  }
+
+  main { padding: 10px; gap: 10px; }
+  .panel { padding: 12px; }
+  .results { grid-template-columns: repeat(auto-fill, minmax(44vw, 1fr)); }
+  .result img { height: 90px; }
+  .analytics-cols { grid-template-columns: 1fr; gap: 12px; }
+  #tab-quad > .panel, #tab-single > .panel { height: calc(100dvh - 120px); }
+  .single-layout { flex-direction: column; }
+
+  /* bigger tap targets */
+  button, .lb-btn { padding: 11px 16px; font-size: 14px; }
+  button.ghost { padding: 9px 14px; }
+  /* 16px avoids iOS zoom-on-focus; exclude radios/checkboxes so they stay small */
+  input:not([type=radio]):not([type=checkbox]), select { padding: 10px; font-size: 16px; }
+  /* tighten the menu so sections don't feel sparse on a tall screen */
+  .menu-panel h3 { margin: 16px 0 8px; }
+  .menu-panel h4 { margin: 10px 0 8px; }
+  .power { margin-bottom: 4px; }
+
+  /* lightbox controls wrap and sit at the bottom, thumb-reachable */
+  .lightbox { justify-content: flex-start; padding-top: 10vh; }
+  .lightbox-stage img { max-height: 58vh; }
+  .lightbox-controls { flex-wrap: wrap; justify-content: center; padding: 0 12px; }
+  .lb-nav { width: 44px; height: 64px; }
+}

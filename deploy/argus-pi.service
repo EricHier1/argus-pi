@@ -1,0 +1,26 @@
+[Unit]
+Description=argus-pi (CV surveillance, ONNX Runtime)
+# Start after Tailscale so argus can bind to the tailnet IP (ARGUS_HOST).
+After=network-online.target tailscaled.service
+Wants=network-online.target tailscaled.service
+
+# NOTE: this is a template. __USER__ / __WORKDIR__ are filled in by
+# scripts/install-service.sh for the user and directory you deploy to.
+[Service]
+Type=simple
+User=__USER__
+Group=__USER__
+# Access to /dev/video* (USB camera).
+SupplementaryGroups=video
+WorkingDirectory=__WORKDIR__
+# Wait (up to ~60s) for Tailscale to assign the tailnet IP before argus binds to it.
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 30); do tailscale ip -4 >/dev/null 2>&1 && exit 0; sleep 2; done; exit 0'
+ExecStart=__WORKDIR__/.venv/bin/python run.py
+Environment=PYTHONUNBUFFERED=1
+Restart=always
+RestartSec=3
+# Give a slow USB camera + model load time before the watchdog gives up.
+TimeoutStartSec=60
+
+[Install]
+WantedBy=multi-user.target
